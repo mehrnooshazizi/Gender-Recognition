@@ -11,8 +11,8 @@ import glob
 import cv2
 from sklearn.model_selection import train_test_split
 
-path_female='G:/MehrnooshAzizi/Programming/Dataset/Gender dataset/dataset asli gender/merging train and validation/Train/Female/'
-path_male='G:/MehrnooshAzizi/Programming/Dataset/Gender dataset/dataset asli gender/merging train and validation/Train/Male/'
+path_female='G:/Mehrrn0sh/DataSet/Gender Dataset/Daatset-merge/Train\Female/'
+path_male='G:/Mehrrn0sh/DataSet/Gender Dataset/Daatset-merge/Train/Male/'
 Male=glob.glob(path_male+'*.jpg')
 Female=glob.glob(path_female+'*.jpg')
 
@@ -24,7 +24,7 @@ for x in Male:
     img=cv2.imread(x)
     img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     img=cv2.resize(img,(100,100))
-    img=img.astype('float16')
+    img=img.astype('float32')
     img=img/np.max(img)
     images_male.append(img)
     labels_male.append(0)
@@ -32,7 +32,7 @@ for x in Female:
     img=cv2.imread(x)
     img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     img=cv2.resize(img,(100,100))
-    img=img.astype('float16')
+    img=img.astype('float32')
     img=img/np.max(img)
     images_female.append(img)
     labels_female.append(1)    
