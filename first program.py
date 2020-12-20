@@ -116,6 +116,8 @@ loss,acc=model.evaluate(x_test,y_test)
 print(f'loss is : {loss} accuracy is: {acc}')
 
 
+##################### acc= 95.21%    loss= 0.45
+
 
 
 
