@@ -30,7 +30,7 @@ for x in Male:
     img=cv2.imread(x)
     img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     img=cv2.resize(img,(100,100))
-    img=img.astype(np.uint8)
+    img=img.astype('float16')
     img=img/np.max(img)
     images_male.append(img)
     labels_male.append(0)
@@ -38,7 +38,7 @@ for x in Female:
     img=cv2.imread(x)
     img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     img=cv2.resize(img,(100,100))
-    img=img.astype(np.uint8)
+    img=img.astype('float16')
     img=img/np.max(img)
     images_female.append(img)
     labels_female.append(1)    
@@ -85,7 +85,7 @@ for train, test in kfold.split(images, labels):
 
 ######################################################## STEP 4
 
-    net=model.fit(x_train,y_train,batch_size=258,epochs=60,verbose=1,validation_split=0.2)
+    net=model.fit(x_train,y_train,batch_size=258,epochs=5,verbose=1,validation_split=0.2)
 
     model.save_weights('model_wights.h5')
     model.save('model.h5')
