@@ -70,7 +70,7 @@ model.add(Conv1D(1024,3,activation='relu',strides=2,padding='same'))
 model.add(Flatten())
 
 model.add(Dense(64,activation='relu'))
-model.add(Dropout(0.2))
+model.add(Dropout(0.4))
 model.add(Dense(32,activation='relu'))
 model.add(Dropout(0.4))
 model.add(Dense(2,activation='sigmoid'))
@@ -83,7 +83,7 @@ print('_____Please Wait...!_____')
 
 ######################################################## STEP 4
 
-net=model.fit(x_train,y_train,batch_size=258,epochs=60,verbose=1,validation_split=0.2)
+net=model.fit(x_train,y_train,batch_size=258,epochs=70,verbose=1,validation_split=0.2)
 
 
 model.save_weights('model_wights.h5')
