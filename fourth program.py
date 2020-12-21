@@ -93,8 +93,8 @@ print('_____Please Wait...!_____')
 net=model.fit(x_train,y_train,batch_size=258,epochs=30,verbose=1,validation_split=0.2)
 
 
-model.save_weights('model_wights.h5')
-model.save('model.h5')
+#model.save_weights('model_wights.h5')
+#model.save('model.h5')
 
 def PlotModel(net):
     import matplotlib.pyplot as plt 
