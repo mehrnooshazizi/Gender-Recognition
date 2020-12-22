@@ -84,8 +84,7 @@ print('_____Please Wait...!_____')
 
 ######################################################## STEP 4
 
-net=model.fit(x_train,y_train,batch_size=258,epochs=20,verbose=1,validation_split=0.3)
-
+net=model.fit(x_train,y_train,batch_size=258,epochs=40,verbose=1,validation_split=0.3)
 
 #model.save_weights('model_wights.h5')
 #model.save('model.h5')
