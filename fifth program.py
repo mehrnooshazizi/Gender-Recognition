@@ -27,7 +27,7 @@ for x in Male:
     img=img.astype('float16')
     img=img/np.max(img)
     images_male.append(img)
-    labels_male.append(0)
+    labels_male.append(-1)
 for x in Female:
     img=cv2.imread(x)
     img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -50,11 +50,12 @@ y_train=np_utils.to_categorical(y_train)
 y_test=np_utils.to_categorical(y_test)
 
 ###################################################### STEP 2
-
+  
 from keras.models import Sequential
 from keras.layers import Conv1D,Flatten,Dense,Dropout
-from keras.losses import Hinge
-from keras.regularizers import L1,L2
+from sklearn import svm
+#from keras.losses import hinge
+from keras.regularizers import L1
 from keras.optimizers import Adam
 
 model=Sequential()
@@ -74,11 +75,11 @@ model.add(Dense(64,activation='relu'))
 model.add(Dropout(0.2))
 model.add(Dense(32,activation='relu'))
 model.add(Dropout(0.4))
-model.add(Dense(2,activation='sigmoid'))
+model.add(Dense(2,activation='Tanh',activity_regularizer=L1(0.001))
 
 ######################################################## STEP 3
-
-model.compile(loss= Hinge(),optimizer=Adam(),metrics=['accuracy'])
+#loss_function_used=tf.keras.losses.Hinge()
+model.compile(loss='hinge',optimizer=Adam(),metrics=['accuracy'])
 print('_____Training Machine_____')
 print('_____Please Wait...!_____')
 
