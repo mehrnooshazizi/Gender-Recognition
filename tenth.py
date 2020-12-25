@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Sep  4 20:54:24 2020
+Created on Wed Dec 23 20:21:39 2020
 
-@author: Markazi.co
+@author: Poorvahab
 """
 ################################################ STEP 1
 
@@ -11,7 +11,7 @@ import glob
 import cv2
 from sklearn.model_selection import train_test_split
 
-path_female='G:/Mehrrn0sh/DataSet/Gender Dataset/Dataset-Origin/Train/Female/'
+path_female='G:/Mehrrn0sh/DataSet/Gender Dataset/Daatset-merge/Train/Female/'
 path_male='G:/Mehrrn0sh/DataSet/Gender Dataset/Daatset-merge/Train/Male/'
 Male=glob.glob(path_male+'*.jpg')
 Female=glob.glob(path_female+'*.jpg')
@@ -22,7 +22,7 @@ images_female=[]
 labels_female=[]
 for x in Male:
     img=cv2.imread(x)
-    #img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     img=cv2.resize(img,(100,100))
     img=img.astype('float16')
     img=img/np.max(img)
@@ -30,7 +30,7 @@ for x in Male:
     labels_male.append(0)
 for x in Female:
     img=cv2.imread(x)
-    #img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     img=cv2.resize(img,(100,100))
     img=img.astype('float16')
     img=img/np.max(img)
@@ -42,7 +42,7 @@ labels_male.extend(labels_female)
 
 images=np.array(images_male)
 labels=np.array(labels_male)
- 
+
 x_train,x_test,y_train,y_test=train_test_split(images,labels,test_size=0.2,random_state=None)
 
 from keras.utils import np_utils
@@ -52,42 +52,45 @@ y_test=np_utils.to_categorical(y_test)
 ###################################################### STEP 2
 
 from keras.models import Sequential
-from keras.layers import Conv2D,Flatten,Dense,Dropout
+from keras.layers import Conv1D,Flatten,Dense,Dropout,BatchNormalization,MaxPool1D
 from keras.regularizers import L2
-from keras.losses import Hinge
+from keras.losses import binary_crossentropy
 from keras.optimizers import SGD
 
 model=Sequential()
-model.add(Conv2D(64,5,activation='relu',padding='same',strides=4,input_shape=(100,100,3)))
-#model.add(Dropout(0.2))
-model.add(Conv2D(128,3,activation='relu',strides=2,padding='same'))
-#model.add(Dropout(0.2))
-model.add(Conv2D(256,3,activation='relu',strides=2,padding='same'))
-#model.add(Dropout(0.2))
-model.add(Conv2D(512,3,activation='relu',strides=1,padding='same'))
-#model.add(Dropout(0.2)) 
-model.add(Conv2D(1024,3,activation='relu',strides=1,padding='same')) 
+model.add(Conv1D(96,7,activation='relu',padding='same',input_shape=(100,100)))
+model.add(BatchNormalization())
+model.add(MaxPool1D(pool_size=3))
+model.add(Dropout(0.25))
+model.add(Conv1D(256,3,activation='relu',padding='same'))
+model.add(BatchNormalization())
+model.add(MaxPool1D(pool_size=3))
+model.add(Dropout(0.25))
+model.add(Conv1D(384,3,activation='relu',padding='same'))
+model.add(BatchNormalization())
+model.add(MaxPool1D(pool_size=3))
+model.add(Dropout(0.25))
+model.add(Conv1D(384,3,activation='relu',padding='same'))
+model.add(BatchNormalization())
+model.add(MaxPool1D(pool_size=3))
+model.add(Dropout(0.25)) 
 
 model.add(Flatten())
 
-model.add(Dense(64,activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(32,activation='relu'))
-model.add(Dropout(0.4))
-model.add(Dense(2,activation='linear',activity_regularizer=L2(0.005)))
+model.add(Dense(512,activation='relu'))
+model.add(BatchNormalization())
+model.add(Dropout(0.5))
+model.add(Dense(2,activation='softmax',activity_regularizer=L2(0.0005)))
 
 ######################################################## STEP 3
 
-model.compile(loss=Hinge(),optimizer=SGD(),metrics=['accuracy'])
+model.compile(loss=binary_crossentropy,optimizer=SGD(lr=0.01, momentum=0.9),metrics=['accuracy'])
 print('_____Training Machine_____')
 print('_____Please Wait...!_____')
 
 ######################################################## STEP 4
 
-net=model.fit(x_train,y_train,batch_size=300,epochs=5,verbose=1,validation_split=0.3)
-
-#model.save_weights('model_wights.h5')
-#model.save('model.h5')
+net=model.fit(x_train,y_train,batch_size=258,epochs=50,verbose=1,validation_split=0.1)
 
 def PlotModel(net):
     import matplotlib.pyplot as plt 

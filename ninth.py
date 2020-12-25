@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Sep  4 20:54:24 2020
+Created on Wed Dec 23 20:21:39 2020
 
-@author: Markazi.co
+@author: Poorvahab
 """
 ################################################ STEP 1
 
@@ -10,6 +10,7 @@ import numpy as np
 import glob
 import cv2
 from sklearn.model_selection import train_test_split
+from sklearn.decomposition import PCA
 
 path_female='G:/Mehrrn0sh/DataSet/Gender Dataset/Dataset-Origin/Train/Female/'
 path_male='G:/Mehrrn0sh/DataSet/Gender Dataset/Daatset-merge/Train/Male/'
@@ -22,7 +23,7 @@ images_female=[]
 labels_female=[]
 for x in Male:
     img=cv2.imread(x)
-    #img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     img=cv2.resize(img,(100,100))
     img=img.astype('float16')
     img=img/np.max(img)
@@ -30,7 +31,7 @@ for x in Male:
     labels_male.append(0)
 for x in Female:
     img=cv2.imread(x)
-    #img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    img=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     img=cv2.resize(img,(100,100))
     img=img.astype('float16')
     img=img/np.max(img)
@@ -40,9 +41,12 @@ for x in Female:
 images_male.extend(images_female)
 labels_male.extend(labels_female)
 
+pca=PCA(n_components=3)
+images_male=pca.fit_transform(images_male)
+
 images=np.array(images_male)
 labels=np.array(labels_male)
- 
+
 x_train,x_test,y_train,y_test=train_test_split(images,labels,test_size=0.2,random_state=None)
 
 from keras.utils import np_utils
@@ -52,21 +56,21 @@ y_test=np_utils.to_categorical(y_test)
 ###################################################### STEP 2
 
 from keras.models import Sequential
-from keras.layers import Conv2D,Flatten,Dense,Dropout
+from keras.layers import Conv1D,Flatten,Dense,Dropout
 from keras.regularizers import L2
 from keras.losses import Hinge
 from keras.optimizers import SGD
 
 model=Sequential()
-model.add(Conv2D(64,5,activation='relu',padding='same',strides=4,input_shape=(100,100,3)))
+model.add(Conv1D(64,3,activation='relu',padding='same',strides=2,input_shape=(100,100)))
 #model.add(Dropout(0.2))
-model.add(Conv2D(128,3,activation='relu',strides=2,padding='same'))
+model.add(Conv1D(128,3,activation='relu',strides=2,padding='same'))
 #model.add(Dropout(0.2))
-model.add(Conv2D(256,3,activation='relu',strides=2,padding='same'))
+model.add(Conv1D(256,3,activation='relu',strides=2,padding='same'))
 #model.add(Dropout(0.2))
-model.add(Conv2D(512,3,activation='relu',strides=1,padding='same'))
+model.add(Conv1D(512,3,activation='relu',strides=1,padding='same'))
 #model.add(Dropout(0.2)) 
-model.add(Conv2D(1024,3,activation='relu',strides=1,padding='same')) 
+model.add(Conv1D(1024,3,activation='relu',strides=1,padding='same')) 
 
 model.add(Flatten())
 
