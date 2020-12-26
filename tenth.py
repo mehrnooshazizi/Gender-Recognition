@@ -77,7 +77,7 @@ model.add(Dropout(0.25))
 model.add(Conv1D(384,3,activation='relu',padding='same'))
 model.add(BatchNormalization())
 model.add(MaxPool1D(pool_size=1))
-#model.add(Dropout(0.25)) 
+model.add(Dropout(0.25)) 
 
 model.add(Flatten())
 
